@@ -1,6 +1,5 @@
-package com.example.MyBookShopApp.data.purchase;
+package com.example.MyBookShopApp.data;
 
-import com.example.MyBookShopApp.data.Book;
 import com.example.MyBookShopApp.security.BookstoreUser;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -9,16 +8,14 @@ import lombok.Setter;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
 
 @Entity
-@Table(name = "purchases")
+@Table(name = "payment_transactions")
 @NoArgsConstructor
 @AllArgsConstructor
 @Getter
 @Setter
-public class Purchase {
+public class PaymentTransaction {
 
     @Id
     @GeneratedValue
@@ -26,10 +23,8 @@ public class Purchase {
     @ManyToOne
     @JoinColumn(name = "users_id", referencedColumnName = "id")
     private BookstoreUser bookstoreUser;
-    private LocalDateTime purchaseDate;
+    private LocalDateTime timeStamp;
     private Double amount;
     private boolean status;
-    @ManyToMany(mappedBy = "purchases")
-    private List<Book> purchasedBooks = new ArrayList<>();
 
 }

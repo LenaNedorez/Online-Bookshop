@@ -1,5 +1,7 @@
-package com.example.MyBookShopApp.data.paymentTransaction;
+package com.example.MyBookShopApp.controllers;
 
+import com.example.MyBookShopApp.data.PaymentTransaction;
+import com.example.MyBookShopApp.services.PaymentTransactionService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;

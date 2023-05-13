@@ -1,5 +1,7 @@
-package com.example.MyBookShopApp.data.instoreAccount;
+package com.example.MyBookShopApp.services;
 
+import com.example.MyBookShopApp.data.InstoreAccount;
+import com.example.MyBookShopApp.repositories.InstoreAccountRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 

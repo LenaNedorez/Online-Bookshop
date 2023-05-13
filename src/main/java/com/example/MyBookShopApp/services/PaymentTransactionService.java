@@ -1,6 +1,7 @@
-package com.example.MyBookShopApp.data.paymentTransaction;
+package com.example.MyBookShopApp.services;
 
-import com.example.MyBookShopApp.data.instoreAccount.InstoreAccountService;
+import com.example.MyBookShopApp.data.PaymentTransaction;
+import com.example.MyBookShopApp.repositories.PaymentTransactionRepository;
 import com.example.MyBookShopApp.security.BookstoreUserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -33,15 +34,15 @@ public class PaymentTransactionService {
     }
 
     public List<PaymentTransaction> getAllTransactions(){
-        return paymentTransactionRepository.getAll();
+        return paymentTransactionRepository.findAll();
     }
 
     public List<PaymentTransaction> getAllUserTransactions(Integer id){
-        return paymentTransactionRepository.getAllByBookstoreUser_Id(id);
+        return paymentTransactionRepository.findAllByBookstoreUser_Id(id);
     }
 
     public PaymentTransaction getPaymentTransactionById(Integer id) {
-        return paymentTransactionRepository.getPaymentTransactionById(id);
+        return paymentTransactionRepository.findById(id).get();
     }
 
     public String handlePaymentTransaction(Integer userId, Double paymentAmount) throws NoSuchAlgorithmException {

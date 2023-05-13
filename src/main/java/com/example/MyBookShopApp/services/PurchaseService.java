@@ -1,7 +1,8 @@
-package com.example.MyBookShopApp.data.purchase;
+package com.example.MyBookShopApp.services;
 
 import com.example.MyBookShopApp.data.Book;
-import com.example.MyBookShopApp.data.instoreAccount.InstoreAccountService;
+import com.example.MyBookShopApp.data.Purchase;
+import com.example.MyBookShopApp.repositories.PurchaseRepository;
 import com.example.MyBookShopApp.security.BookstoreUserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -26,14 +27,14 @@ public class PurchaseService {
     public Purchase performInstorePurchase(Integer userId, List<Book> purchasedBooks){
         Double paymentSumTotal = purchasedBooks.stream().mapToDouble(Book::disсountPrice).sum();
         Purchase purchase = new Purchase();
-        purchase.setBookstoreUser(bookstoreUserRepository.findBookstoreUserById(userId));
+        purchase.setBookstoreUser(bookstoreUserRepository.findById(userId).get());
         purchase.setPurchaseDate(LocalDateTime.now());
         purchase.setPurchasedBooks(purchasedBooks);
         purchase.setAmount(paymentSumTotal);
         purchase.setStatus(true);
         purchaseRepository.save(purchase);
         instoreAccountService.withdrawMoneyFromInstoreAccount(userId, paymentSumTotal);
-        return new Purchase();
+        return purchase;
     }
 
 }

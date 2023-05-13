@@ -1,8 +1,8 @@
 package com.example.MyBookShopApp.controllers;
 
 import com.example.MyBookShopApp.data.Book;
-import com.example.MyBookShopApp.data.BookRepository;
-import com.example.MyBookShopApp.data.purchase.PurchaseService;
+import com.example.MyBookShopApp.repositories.BookRepository;
+import com.example.MyBookShopApp.services.PurchaseService;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;

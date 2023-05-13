@@ -1,4 +1,4 @@
-package com.example.MyBookShopApp.data.instoreAccount;
+package com.example.MyBookShopApp.data;
 
 import com.example.MyBookShopApp.security.BookstoreUser;
 import lombok.AllArgsConstructor;
