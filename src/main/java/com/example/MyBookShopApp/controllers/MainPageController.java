@@ -72,4 +72,18 @@ public class MainPageController {
                                           @PathVariable(value = "searchWord", required = false) SearchWordDto searchWordDto) {
         return new BooksPageDto(bookService.getPageOfGoogleBooksApiSearchResult(searchWordDto.getExample(), offset, limit));
     }
+
+    @GetMapping("/books/recent")
+    @ResponseBody
+    public BooksPageDto getRecentBooksPage(@RequestParam("offset") Integer offset,
+                                           @RequestParam("limit") Integer limit) {
+        return new BooksPageDto(bookService.getPageOfRecentBooks(offset, limit).getContent());
+    }
+
+    @GetMapping("/books/popular")
+    @ResponseBody
+    public BooksPageDto getPopularBooksPage(@RequestParam("offset") Integer offset,
+                                            @RequestParam("limit") Integer limit) {
+        return new BooksPageDto(bookService.getPageOfPopularBooks(offset, limit).getContent());
+    }
 }

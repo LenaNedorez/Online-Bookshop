@@ -13,6 +13,7 @@ import org.springframework.web.bind.MissingServletRequestParameterException;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDateTime;
+import java.util.Date;
 import java.util.List;
 
 @RestController
@@ -75,5 +76,11 @@ public class BooksRestApiController {
     public ResponseEntity<ApiResponse<Book>> handleBookstoreApiWrongParameterException(Exception exception){
         return new ResponseEntity<>(new ApiResponse<Book>(HttpStatus.BAD_REQUEST, "Bad parameter value...",exception)
         ,HttpStatus.BAD_REQUEST);
+    }
+
+    @GetMapping("/books/by-pub-date-between")
+    @ApiOperation("get books between first and second publication dates")
+    public ResponseEntity<List<Book>> pubDateBetweenBooks(@RequestParam("firstDate") Date firstDate, @RequestParam("secondDate") Date secondDate){
+        return ResponseEntity.ok(bookService.getBooksWithPubDateBetween(firstDate, secondDate));
     }
 }

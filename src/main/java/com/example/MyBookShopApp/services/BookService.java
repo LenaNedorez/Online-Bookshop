@@ -6,6 +6,7 @@ import com.example.MyBookShopApp.data.google.api.books.Item;
 import com.example.MyBookShopApp.data.google.api.books.Root;
 import com.example.MyBookShopApp.errs.BookstoreApiWrongParameterException;
 import com.example.MyBookShopApp.repositories.BookRepository;
+import io.swagger.v3.oas.models.headers.Header;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
@@ -15,6 +16,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 @Service
@@ -108,5 +110,19 @@ public class BookService {
             }
         }
         return list;
+    }
+
+    public Page<Book> getPageOfRecentBooks(Integer offset, Integer limit){
+        Pageable nextPage = PageRequest.of(offset,limit);
+        return bookRepository.findAll(nextPage);
+    }
+
+    public Page<Book> getPageOfPopularBooks(Integer offset, Integer limit){
+        Pageable nextPage = PageRequest.of(offset,limit);
+        return bookRepository.findAll(nextPage);
+    }
+
+    public List<Book> getBooksWithPubDateBetween(Date firstDate, Date secondDate){
+        return bookRepository.findBooksByPubDateBetween(firstDate,secondDate);
     }
 }
