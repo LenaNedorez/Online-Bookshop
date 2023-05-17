@@ -84,7 +84,7 @@ public class Book {
             joinColumns = { @JoinColumn(name = "book_id") },
             inverseJoinColumns = { @JoinColumn(name = "purchase_id") }
     )
-    private List<Purchase> purchases = new ArrayList<>();
+    List<Purchase> purchases = new ArrayList<>();
 
     public Integer getIsBesteller() {
         return isBesteller;
