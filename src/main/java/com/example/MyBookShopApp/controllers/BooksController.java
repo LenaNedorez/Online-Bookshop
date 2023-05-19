@@ -1,8 +1,10 @@
 package com.example.MyBookShopApp.controllers;
 
 import com.example.MyBookShopApp.data.Book;
+import com.example.MyBookShopApp.data.BooksPageDto;
 import com.example.MyBookShopApp.repositories.BookRepository;
 import com.example.MyBookShopApp.data.ResourceStorage;
+import com.example.MyBookShopApp.services.BookService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.ByteArrayResource;
 import org.springframework.http.HttpHeaders;
@@ -22,12 +24,12 @@ import java.util.logging.Logger;
 public class BooksController {
 
     private final BookRepository bookRepository;
+    private final BookService bookService;
     private final ResourceStorage storage;
 
-
-    @Autowired
-    public BooksController(BookRepository bookRepository,ResourceStorage storage) {
+    public BooksController(BookRepository bookRepository, BookService bookService, ResourceStorage storage) {
         this.bookRepository = bookRepository;
+        this.bookService = bookService;
         this.storage = storage;
     }
 
@@ -64,5 +66,19 @@ public class BooksController {
                 .contentType(mediaType)
                 .contentLength(data.length)
                 .body(new ByteArrayResource(data));
+    }
+
+    @GetMapping("/recent")
+    @ResponseBody
+    public BooksPageDto getRecentBooksPage(@RequestParam("offset") Integer offset,
+                                           @RequestParam("limit") Integer limit) {
+        return new BooksPageDto(bookService.getPageOfRecentBooks(offset, limit).getContent());
+    }
+
+    @GetMapping("/popular")
+    @ResponseBody
+    public BooksPageDto getPopularBooksPage(@RequestParam("offset") Integer offset,
+                                            @RequestParam("limit") Integer limit) {
+        return new BooksPageDto(bookService.getPageOfPopularBooks(offset, limit).getContent());
     }
 }
