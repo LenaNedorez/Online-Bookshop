@@ -41,6 +41,10 @@ public class BookService {
         return bookRepository.findBooksByAuthorFirstNameContaining(authorName);
     }
 
+    public Book getBookById(Integer id){
+        return bookRepository.findBookById(id);
+    }
+
     public List<Book> getBooksByTitle(String title) throws BookstoreApiWrongParameterException {
         if (title.equals("") || title.length() <= 1) {
             throw new BookstoreApiWrongParameterException("Wrong values passed to one or more parameters");

@@ -1,6 +1,7 @@
 package com.example.MyBookShopApp.repositories;
 
 import com.example.MyBookShopApp.data.Book;
+import io.swagger.models.auth.In;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -10,6 +11,8 @@ import java.util.Date;
 import java.util.List;
 
 public interface BookRepository extends JpaRepository<Book, Integer> {
+
+    Book findBookById(Integer id);
 
     List<Book> findBooksByAuthor_FirstName(String name);
 
