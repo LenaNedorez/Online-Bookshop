@@ -27,7 +27,13 @@ public class BookBrowsing {
 
     @ManyToOne
     @JoinColumn(name = "users_id", referencedColumnName = "id")
-    private BookstoreUser bookStoreUser;
+    private BookstoreUser bookstoreUser;
 
     private LocalDateTime dateTime;
+
+    public BookBrowsing(Book book, BookstoreUser bookstoreUser, LocalDateTime dateTime) {
+        this.book = book;
+        this.bookstoreUser = bookstoreUser;
+        this.dateTime = dateTime;
+    }
 }

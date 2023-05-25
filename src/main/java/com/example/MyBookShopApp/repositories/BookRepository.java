@@ -1,7 +1,6 @@
 package com.example.MyBookShopApp.repositories;
 
 import com.example.MyBookShopApp.data.Book;
-import io.swagger.models.auth.In;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;

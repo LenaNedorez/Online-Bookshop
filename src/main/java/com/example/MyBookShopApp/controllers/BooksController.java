@@ -1,9 +1,13 @@
 package com.example.MyBookShopApp.controllers;
 
 import com.example.MyBookShopApp.data.Book;
+import com.example.MyBookShopApp.data.BookBrowsing;
 import com.example.MyBookShopApp.data.BooksPageDto;
+import com.example.MyBookShopApp.repositories.BookBrowsingRepository;
 import com.example.MyBookShopApp.repositories.BookRepository;
 import com.example.MyBookShopApp.data.ResourceStorage;
+import com.example.MyBookShopApp.security.BookstoreUser;
+import com.example.MyBookShopApp.security.BookstoreUserRegister;
 import com.example.MyBookShopApp.services.BookService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.ByteArrayResource;
@@ -17,6 +21,8 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.nio.file.Path;
+import java.time.LocalDateTime;
+import java.util.List;
 import java.util.logging.Logger;
 
 @Controller
@@ -24,11 +30,16 @@ import java.util.logging.Logger;
 public class BooksController {
 
     private final BookRepository bookRepository;
+    private final BookstoreUserRegister bookstoreUserRegister;
+    private final BookBrowsingRepository bookBrowsingRepository;
     private final BookService bookService;
     private final ResourceStorage storage;
 
-    public BooksController(BookRepository bookRepository, BookService bookService, ResourceStorage storage) {
+    @Autowired
+    public BooksController(BookRepository bookRepository, BookstoreUserRegister bookstoreUserRegister, BookBrowsingRepository bookBrowsingRepository, BookService bookService, ResourceStorage storage) {
         this.bookRepository = bookRepository;
+        this.bookstoreUserRegister = bookstoreUserRegister;
+        this.bookBrowsingRepository = bookBrowsingRepository;
         this.bookService = bookService;
         this.storage = storage;
     }
@@ -37,6 +48,8 @@ public class BooksController {
     public String bookPage(@PathVariable("slug") String slug, Model model) {
         Book book = bookRepository.findBookBySlug(slug);
         model.addAttribute("slugBook", book);
+        BookstoreUser bookstoreUser = ((BookstoreUser) bookstoreUserRegister.getCurrentUser());
+        bookBrowsingRepository.save(new BookBrowsing(book, bookstoreUser, LocalDateTime.now()));
         return "/books/slug";
     }
 
@@ -70,15 +83,14 @@ public class BooksController {
 
     @GetMapping("/recent")
     @ResponseBody
-    public BooksPageDto getRecentBooksPage(@RequestParam("offset") Integer offset,
-                                           @RequestParam("limit") Integer limit) {
-        return new BooksPageDto(bookService.getPageOfRecentBooks(offset, limit).getContent());
+    public ResponseEntity<List<Book>> getRecentBooks() {
+        BookstoreUser bookstoreUser = (BookstoreUser) bookstoreUserRegister.getCurrentUser();
+        return ResponseEntity.ok(bookService.getRecentBooks(bookstoreUser));
     }
 
     @GetMapping("/popular")
     @ResponseBody
-    public BooksPageDto getPopularBooksPage(@RequestParam("offset") Integer offset,
-                                            @RequestParam("limit") Integer limit) {
-        return new BooksPageDto(bookService.getPageOfPopularBooks(offset, limit).getContent());
+    public ResponseEntity<List<Book>> getPopularBooks() {
+        return ResponseEntity.ok(bookService.getPopularBooks());
     }
 }

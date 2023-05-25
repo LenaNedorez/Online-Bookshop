@@ -1,6 +1,8 @@
 package com.example.MyBookShopApp.controllers;
 
 import com.example.MyBookShopApp.data.PaymentTransaction;
+import com.example.MyBookShopApp.security.BookstoreUser;
+import com.example.MyBookShopApp.security.BookstoreUserRegister;
 import com.example.MyBookShopApp.services.PaymentTransactionService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -16,11 +18,13 @@ import java.util.List;
 @RequestMapping("/payment_transactions")
 public class PaymentTransactionController {
 
-    private PaymentTransactionService paymentTransactionService;
+    private final PaymentTransactionService paymentTransactionService;
+    private final BookstoreUserRegister bookstoreUserRegister;
 
     @Autowired
-    public PaymentTransactionController(PaymentTransactionService paymentTransactionService) {
+    public PaymentTransactionController(PaymentTransactionService paymentTransactionService, BookstoreUserRegister bookstoreUserRegister) {
         this.paymentTransactionService = paymentTransactionService;
+        this.bookstoreUserRegister = bookstoreUserRegister;
     }
 
     @GetMapping("/all")
@@ -31,8 +35,9 @@ public class PaymentTransactionController {
 
     @PostMapping("/user_transaction_history")
     @ResponseBody
-    public ResponseEntity<List<PaymentTransaction>> getAllUserTransactions(@RequestParam("user_id") Integer id){
-        return ResponseEntity.ok(paymentTransactionService.getAllUserTransactions(id));
+    public ResponseEntity<List<PaymentTransaction>> getAllUserTransactions(){
+        BookstoreUser bookstoreUser = (BookstoreUser) bookstoreUserRegister.getCurrentUser();
+        return ResponseEntity.ok(paymentTransactionService.getAllUserTransactions(bookstoreUser.getId()));
     }
 
     @PostMapping("/user_transaction_history/transaction")
@@ -43,9 +48,9 @@ public class PaymentTransactionController {
 
     @Transactional
     @PostMapping("/transaction")
-    public RedirectView handlePaymentTransaction(@RequestParam("user_id") Integer id,
-                                                 @RequestParam("payment_amount") Double paymentAmount) throws NoSuchAlgorithmException {
-        String paymentUrl = paymentTransactionService.handlePaymentTransaction(id, paymentAmount);
+    public RedirectView handlePaymentTransaction(@RequestParam("payment_amount") Double paymentAmount) throws NoSuchAlgorithmException {
+        BookstoreUser bookstoreUser = (BookstoreUser) bookstoreUserRegister.getCurrentUser();
+        String paymentUrl = paymentTransactionService.handlePaymentTransaction(bookstoreUser.getId(), paymentAmount);
         return new RedirectView(paymentUrl);
     }
 }

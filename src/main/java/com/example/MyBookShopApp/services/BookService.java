@@ -2,32 +2,42 @@ package com.example.MyBookShopApp.services;
 
 import com.example.MyBookShopApp.data.Author;
 import com.example.MyBookShopApp.data.Book;
+import com.example.MyBookShopApp.data.BookBrowsing;
 import com.example.MyBookShopApp.data.google.api.books.Item;
 import com.example.MyBookShopApp.data.google.api.books.Root;
 import com.example.MyBookShopApp.errs.BookstoreApiWrongParameterException;
+import com.example.MyBookShopApp.repositories.BookBrowsingRepository;
 import com.example.MyBookShopApp.repositories.BookRepository;
+import com.example.MyBookShopApp.security.BookstoreUser;
+import com.example.MyBookShopApp.security.BookstoreUserRegister;
 import io.swagger.v3.oas.models.headers.Header;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class BookService {
 
-    private BookRepository bookRepository;
-    private RestTemplate restTemplate;
+    private final BookRepository bookRepository;
+    private final BookstoreUserRegister bookstoreUserRegister;
+    private final BookBrowsingRepository bookBrowsingRepository;
+    private final RestTemplate restTemplate;
 
     @Autowired
-    public BookService(BookRepository bookRepository, RestTemplate restTemplate) {
+    public BookService(BookRepository bookRepository, BookstoreUserRegister bookstoreUserRegister, BookBrowsingRepository bookBrowsingRepository, RestTemplate restTemplate) {
         this.bookRepository = bookRepository;
+        this.bookstoreUserRegister = bookstoreUserRegister;
+        this.bookBrowsingRepository = bookBrowsingRepository;
         this.restTemplate = restTemplate;
     }
 
@@ -116,14 +126,15 @@ public class BookService {
         return list;
     }
 
-    public Page<Book> getPageOfRecentBooks(Integer offset, Integer limit){
-        Pageable nextPage = PageRequest.of(offset,limit);
-        return bookRepository.findAll(nextPage);
+    public List<Book> getRecentBooks(BookstoreUser bookstoreUser){
+        Sort.TypedSort<BookBrowsing> bookBrowsingSort = Sort.sort(BookBrowsing.class);
+        Sort sort = bookBrowsingSort.by(BookBrowsing::getId).descending();
+        List<BookBrowsing> recentBookBrowsings = bookBrowsingRepository.findFirst10ByBookstoreUser(bookstoreUser, sort);
+        return recentBookBrowsings.stream().map(BookBrowsing::getBook).collect(Collectors.toList());
     }
 
-    public Page<Book> getPageOfPopularBooks(Integer offset, Integer limit){
-        Pageable nextPage = PageRequest.of(offset,limit);
-        return bookRepository.findAll(nextPage);
+    public List<Book> getPopularBooks(){
+        return bookBrowsingRepository.getPopularBooks();
     }
 
     public List<Book> getBooksWithPubDateBetween(Date firstDate, Date secondDate){
