@@ -23,7 +23,7 @@ public class PaymentTransaction {
     @ManyToOne
     @JoinColumn(name = "users_id", referencedColumnName = "id")
     private BookstoreUser bookstoreUser;
-    private LocalDateTime timeStamp;
+    private LocalDateTime timestamp;
     private Double amount;
     private boolean status;
 

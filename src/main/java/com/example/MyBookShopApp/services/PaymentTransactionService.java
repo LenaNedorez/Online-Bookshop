@@ -50,7 +50,7 @@ public class PaymentTransactionService {
 
         PaymentTransaction paymentTransaction = new PaymentTransaction();
         paymentTransaction.setBookstoreUser(bookstoreUserRepository.findBookstoreUserById(userId));
-        paymentTransaction.setTimeStamp(LocalDateTime.now());
+        paymentTransaction.setTimestamp(LocalDateTime.now());
         paymentTransaction.setAmount(paymentAmount);
         paymentTransaction.setStatus(true);
 
