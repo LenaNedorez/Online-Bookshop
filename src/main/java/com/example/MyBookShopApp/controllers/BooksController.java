@@ -2,7 +2,6 @@ package com.example.MyBookShopApp.controllers;
 
 import com.example.MyBookShopApp.data.Book;
 import com.example.MyBookShopApp.data.BookBrowsing;
-import com.example.MyBookShopApp.data.BooksPageDto;
 import com.example.MyBookShopApp.repositories.BookBrowsingRepository;
 import com.example.MyBookShopApp.repositories.BookRepository;
 import com.example.MyBookShopApp.data.ResourceStorage;
@@ -22,7 +21,6 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.time.LocalDateTime;
-import java.util.List;
 import java.util.logging.Logger;
 
 @Controller
@@ -48,7 +46,7 @@ public class BooksController {
     public String bookPage(@PathVariable("slug") String slug, Model model) {
         Book book = bookRepository.findBookBySlug(slug);
         model.addAttribute("slugBook", book);
-        BookstoreUser bookstoreUser = ((BookstoreUser) bookstoreUserRegister.getCurrentUser());
+        BookstoreUser bookstoreUser = (BookstoreUser) bookstoreUserRegister.getCurrentUser();
         bookBrowsingRepository.save(new BookBrowsing(book, bookstoreUser, LocalDateTime.now()));
         return "/books/slug";
     }
@@ -81,16 +79,4 @@ public class BooksController {
                 .body(new ByteArrayResource(data));
     }
 
-    @GetMapping("/recent")
-    @ResponseBody
-    public ResponseEntity<List<Book>> getRecentBooks() {
-        BookstoreUser bookstoreUser = (BookstoreUser) bookstoreUserRegister.getCurrentUser();
-        return ResponseEntity.ok(bookService.getRecentBooks(bookstoreUser));
-    }
-
-    @GetMapping("/popular")
-    @ResponseBody
-    public ResponseEntity<List<Book>> getPopularBooks() {
-        return ResponseEntity.ok(bookService.getPopularBooks());
-    }
 }

@@ -1,11 +1,15 @@
 package com.example.MyBookShopApp.controllers;
 
 import com.example.MyBookShopApp.data.Book;
+import com.example.MyBookShopApp.security.BookstoreUser;
+import com.example.MyBookShopApp.security.BookstoreUserRegister;
 import com.example.MyBookShopApp.services.BookService;
 import com.example.MyBookShopApp.data.BooksPageDto;
 import com.example.MyBookShopApp.data.SearchWordDto;
 import com.example.MyBookShopApp.errs.EmptySearchException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -17,10 +21,12 @@ import java.util.List;
 public class MainPageController {
 
     private final BookService bookService;
+    private final BookstoreUserRegister bookstoreUserRegister;
 
     @Autowired
-    public MainPageController(BookService bookService) {
+    public MainPageController(BookService bookService, BookstoreUserRegister bookstoreUserRegister) {
         this.bookService = bookService;
+        this.bookstoreUserRegister = bookstoreUserRegister;
     }
 
     @ModelAttribute("recommendedBooks")
@@ -38,6 +44,15 @@ public class MainPageController {
         return new ArrayList<>();
     }
 
+    @ModelAttribute("popularBooks")
+    public List<Book> popularBooks() { return bookService.getPageofPopularBooks(0, 6).getContent(); }
+
+    @ModelAttribute("recentlyViewedBooks")
+    public List<Book> recentlyViewedBooks() {
+        BookstoreUser bookstoreUser = (BookstoreUser) bookstoreUserRegister.getCurrentUser();
+        return bookService.getRecentlyViewedBooksPage(bookstoreUser, 0, 6).getContent();
+    }
+
     @GetMapping("/")
     public String mainPage(Model model) {
         return "index";
@@ -48,6 +63,28 @@ public class MainPageController {
     public BooksPageDto getBooksPage(@RequestParam("offset") Integer offset,
                                      @RequestParam("limit") Integer limit) {
         return new BooksPageDto(bookService.getPageofRecommendedBooks(offset, limit).getContent());
+    }
+
+    @GetMapping("/books/popular")
+    @ResponseBody
+    public BooksPageDto getPopularBooksPage(@RequestParam("offset") Integer offset,
+                                            @RequestParam("limit") Integer limit) {
+        return new BooksPageDto(bookService.getPageofPopularBooks(offset, limit).getContent());
+    }
+
+    @GetMapping("/books/recently-viewed")
+    @ResponseBody
+    public BooksPageDto getRecentlyViewedBooksPage(@RequestParam("offset") Integer offset,
+                                                   @RequestParam("limit") Integer limit) {
+        BookstoreUser bookstoreUser = (BookstoreUser) bookstoreUserRegister.getCurrentUser();
+        return new BooksPageDto(bookService.getRecentlyViewedBooksPage(bookstoreUser, offset, limit).getContent());
+    }
+
+    @GetMapping("/books/recent")
+    @ResponseBody
+    public BooksPageDto getRecentBooksPage(@RequestParam("offset") Integer offset,
+                                           @RequestParam("limit") Integer limit) {
+        return new BooksPageDto(bookService.getRecentBooks(offset, limit).getContent());
     }
 
     @GetMapping(value = {"/search", "/search/{searchWord}"})
@@ -62,7 +99,6 @@ public class MainPageController {
         }else {
             throw new EmptySearchException("Поиск по null невозможен");
         }
-
     }
 
     @GetMapping("/search/page/{searchWord}")

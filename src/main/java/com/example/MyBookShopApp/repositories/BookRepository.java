@@ -1,6 +1,7 @@
 package com.example.MyBookShopApp.repositories;
 
 import com.example.MyBookShopApp.data.Book;
+import com.example.MyBookShopApp.data.BookBrowsing;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -36,4 +37,6 @@ public interface BookRepository extends JpaRepository<Book, Integer> {
     List<Book> findBooksBySlugIn(String[] slugs);
 
     List<Book> findBooksByPubDateBetween(Date firstDate, Date secondDate);
+
+    Page<Book> findFirst20ByOrderByPubDateDesc(Pageable pageable);
 }

@@ -13,10 +13,7 @@ import com.example.MyBookShopApp.security.BookstoreUserRegister;
 import io.swagger.v3.oas.models.headers.Header;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
+import org.springframework.data.domain.*;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
@@ -126,18 +123,25 @@ public class BookService {
         return list;
     }
 
-    public List<Book> getRecentBooks(BookstoreUser bookstoreUser){
-        Sort.TypedSort<BookBrowsing> bookBrowsingSort = Sort.sort(BookBrowsing.class);
-        Sort sort = bookBrowsingSort.by(BookBrowsing::getId).descending();
-        List<BookBrowsing> recentBookBrowsings = bookBrowsingRepository.findFirst10ByBookstoreUser(bookstoreUser, sort);
-        return recentBookBrowsings.stream().map(BookBrowsing::getBook).collect(Collectors.toList());
-    }
-
-    public List<Book> getPopularBooks(){
-        return bookBrowsingRepository.getPopularBooks();
-    }
-
     public List<Book> getBooksWithPubDateBetween(Date firstDate, Date secondDate){
         return bookRepository.findBooksByPubDateBetween(firstDate,secondDate);
+    }
+
+    public Page<Book> getPageofPopularBooks(Integer offset, Integer limit) {
+        Pageable pageable = PageRequest.of(offset, limit);
+        return bookBrowsingRepository.getPopularBooks(pageable);
+    }
+
+    public Page<Book> getRecentlyViewedBooksPage(BookstoreUser bookstoreUser, Integer offset, Integer limit) {
+        Sort.TypedSort<BookBrowsing> bookBrowsingSort = Sort.sort(BookBrowsing.class);
+        Sort sort = bookBrowsingSort.by(BookBrowsing::getId).descending();
+        Pageable pageable = PageRequest.of(offset, limit, sort);
+        List<BookBrowsing> recentBookBrowsings = bookBrowsingRepository.findFirst10ByBookstoreUser(bookstoreUser, pageable);
+        return new PageImpl<Book>(recentBookBrowsings.stream().map(BookBrowsing::getBook).collect(Collectors.toList()));
+    }
+
+    public Page<Book> getRecentBooks(Integer offset, Integer limit) {
+        Pageable pageable = PageRequest.of(offset, limit);
+        return bookRepository.findFirst20ByOrderByPubDateDesc(pageable);
     }
 }
