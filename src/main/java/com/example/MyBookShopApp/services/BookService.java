@@ -9,8 +9,6 @@ import com.example.MyBookShopApp.errs.BookstoreApiWrongParameterException;
 import com.example.MyBookShopApp.repositories.BookBrowsingRepository;
 import com.example.MyBookShopApp.repositories.BookRepository;
 import com.example.MyBookShopApp.security.BookstoreUser;
-import com.example.MyBookShopApp.security.BookstoreUserRegister;
-import io.swagger.v3.oas.models.headers.Header;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.*;
@@ -25,23 +23,15 @@ import java.util.stream.Collectors;
 public class BookService {
 
     private final BookRepository bookRepository;
-    private final BookstoreUserRegister bookstoreUserRegister;
     private final BookBrowsingRepository bookBrowsingRepository;
     private final RestTemplate restTemplate;
 
     @Autowired
-    public BookService(BookRepository bookRepository, BookstoreUserRegister bookstoreUserRegister, BookBrowsingRepository bookBrowsingRepository, RestTemplate restTemplate) {
+    public BookService(BookRepository bookRepository, BookBrowsingRepository bookBrowsingRepository, RestTemplate restTemplate) {
         this.bookRepository = bookRepository;
-        this.bookstoreUserRegister = bookstoreUserRegister;
         this.bookBrowsingRepository = bookBrowsingRepository;
         this.restTemplate = restTemplate;
     }
-
-    public List<Book> getBooksData() {
-        return bookRepository.findAll();
-    }
-
-    //NEW BOOK SERVICE METHODS
 
     public List<Book> getBooksByAuthor(String authorName) {
         return bookRepository.findBooksByAuthorFirstNameContaining(authorName);
@@ -80,7 +70,7 @@ public class BookService {
         return bookRepository.getBestsellers();
     }
 
-    public Page<Book> getPageofRecommendedBooks(Integer offset, Integer limit) {
+    public Page<Book> getPageOfRecommendedBooks(Integer offset, Integer limit) {
         Pageable nextPage = PageRequest.of(offset, limit);
         return bookRepository.findAll(nextPage);
     }
@@ -126,26 +116,35 @@ public class BookService {
         return bookRepository.findBooksByPubDateBetween(firstDate,secondDate);
     }
 
-    public Page<Book> getPageofPopularBooks(Integer offset, Integer limit) {
-        List<BookBrowsing> bookBrowsingList = bookBrowsingRepository.findAllByDateTimeAfter(LocalDateTime.now().minusMonths(1));
-        Map<Book, List<BookBrowsing>> groupingBookBrowsingsbyBooks = bookBrowsingList.stream()
-                .collect(Collectors.groupingBy(BookBrowsing::getBook));
-        List<Book> popularBooks = groupingBookBrowsingsbyBooks.entrySet()
-                .stream().sorted(Comparator.comparingInt(es -> -es.getValue().size()))
-                .map(Map.Entry::getKey).collect(Collectors.toList());
-        return new PageImpl<>(popularBooks);
-    }
-
-    public Page<Book> getRecentlyViewedBooksPage(BookstoreUser bookstoreUser, Integer offset, Integer limit) {
-        Sort.TypedSort<BookBrowsing> bookBrowsingSort = Sort.sort(BookBrowsing.class);
-        Sort sort = bookBrowsingSort.by(BookBrowsing::getId).descending();
-        Pageable pageable = PageRequest.of(offset, limit, sort);
-        List<BookBrowsing> recentBookBrowsings = bookBrowsingRepository.findFirst10ByBookstoreUser(bookstoreUser, pageable);
-        return new PageImpl<Book>(recentBookBrowsings.stream().map(BookBrowsing::getBook).collect(Collectors.toList()));
-    }
+//    public Page<Book> getRecentlyViewedBooksPage(BookstoreUser bookstoreUser, Integer offset, Integer limit) {
+//        Sort.TypedSort<BookBrowsing> bookBrowsingSort = Sort.sort(BookBrowsing.class);
+//        Sort sort = bookBrowsingSort.by(BookBrowsing::getId).descending();
+//        Pageable pageable = PageRequest.of(offset, limit, sort);
+//        List<BookBrowsing> recentBookBrowsings = bookBrowsingRepository.findFirst10ByBookstoreUser(bookstoreUser, pageable);
+//        return new PageImpl<>(recentBookBrowsings.stream().map(BookBrowsing::getBook).collect(Collectors.toList()));
+//    }
 
     public Page<Book> getPageOfRecentBooks(Integer offset, Integer limit) {
         Pageable pageable = PageRequest.of(offset, limit);
         return bookRepository.findFirst100ByOrderByPubDateDesc(pageable);
+    }
+
+    public List<Book> getRecentBooks() {
+        return bookRepository.findFirst100ByOrderByPubDateDesc();
+    }
+
+    public List<Book> getPopularBooks() {
+        List<BookBrowsing> bookBrowsingList = bookBrowsingRepository.findAllByDateTimeAfter(LocalDateTime.now().minusMonths(1));
+        Map<Book, List<BookBrowsing>> groupingBookBrowsingsbyBooks = bookBrowsingList.stream()
+                .collect(Collectors.groupingBy(BookBrowsing::getBook));
+        return groupingBookBrowsingsbyBooks.entrySet()
+                .stream().sorted(Comparator.comparingInt(es -> -es.getValue().size()))
+                .map(Map.Entry::getKey).collect(Collectors.toList());
+    }
+
+    public List<Book> getRecentlyViewedBooks(BookstoreUser bookstoreUser) {
+        Sort.TypedSort<BookBrowsing> bookBrowsingSort = Sort.sort(BookBrowsing.class);
+        Sort sort = bookBrowsingSort.by(BookBrowsing::getId).descending();
+        return bookBrowsingRepository.findFirst10ByBookstoreUser(bookstoreUser, sort).stream().map(BookBrowsing::getBook).collect(Collectors.toList());
     }
 }

@@ -39,4 +39,6 @@ public interface BookRepository extends JpaRepository<Book, Integer> {
     List<Book> findBooksByPubDateBetween(Date firstDate, Date secondDate);
 
     Page<Book> findFirst100ByOrderByPubDateDesc(Pageable pageable);
+
+    List<Book> findFirst100ByOrderByPubDateDesc();
 }

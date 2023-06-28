@@ -1,15 +1,11 @@
 package com.example.MyBookShopApp.controllers;
 
 import com.example.MyBookShopApp.data.Book;
-import com.example.MyBookShopApp.security.BookstoreUser;
-import com.example.MyBookShopApp.security.BookstoreUserRegister;
 import com.example.MyBookShopApp.services.BookService;
 import com.example.MyBookShopApp.data.BooksPageDto;
 import com.example.MyBookShopApp.data.SearchWordDto;
 import com.example.MyBookShopApp.errs.EmptySearchException;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -21,17 +17,15 @@ import java.util.List;
 public class MainPageController {
 
     private final BookService bookService;
-    private final BookstoreUserRegister bookstoreUserRegister;
 
     @Autowired
-    public MainPageController(BookService bookService, BookstoreUserRegister bookstoreUserRegister) {
+    public MainPageController(BookService bookService) {
         this.bookService = bookService;
-        this.bookstoreUserRegister = bookstoreUserRegister;
     }
 
     @ModelAttribute("recommendedBooks")
     public List<Book> recommendedBooks() {
-        return bookService.getPageofRecommendedBooks(0, 6).getContent();
+        return bookService.getPageOfRecommendedBooks(0, 6).getContent();
     }
 
     @ModelAttribute("searchWordDto")
@@ -45,7 +39,7 @@ public class MainPageController {
     }
 
     @ModelAttribute("popularBooks")
-    public List<Book> popularBooks() { return bookService.getPageofPopularBooks(0, 6).getContent(); }
+    public List<Book> popularBooks() { return bookService.getPopularBooks(); }
 
     @ModelAttribute("recentBooks")
     public List<Book> recentBooks() { return bookService.getPageOfRecentBooks(0, 6).getContent(); }
@@ -59,30 +53,22 @@ public class MainPageController {
     @ResponseBody
     public BooksPageDto getBooksPage(@RequestParam("offset") Integer offset,
                                      @RequestParam("limit") Integer limit) {
-        return new BooksPageDto(bookService.getPageofRecommendedBooks(offset, limit).getContent());
+        return new BooksPageDto(bookService.getPageOfRecommendedBooks(offset, limit).getContent());
     }
 
-    @GetMapping("/books/popular")
-    @ResponseBody
-    public BooksPageDto getPopularBooksPage(@RequestParam("offset") Integer offset,
-                                            @RequestParam("limit") Integer limit) {
-        return new BooksPageDto(bookService.getPageofPopularBooks(offset, limit).getContent());
-    }
-
-//    @GetMapping("/books/recently-viewed")
+//    @GetMapping("/books/popular")
 //    @ResponseBody
-//    public BooksPageDto getRecentlyViewedBooksPage(@RequestParam("offset") Integer offset,
-//                                                   @RequestParam("limit") Integer limit) {
-//        BookstoreUser bookstoreUser = (BookstoreUser) bookstoreUserRegister.getCurrentUser();
-//        return new BooksPageDto(bookService.getRecentlyViewedBooksPage(bookstoreUser, offset, limit).getContent());
+//    public BooksPageDto getPopularBooksPage(@RequestParam("offset") Integer offset,
+//                                            @RequestParam("limit") Integer limit) {
+//        return new BooksPageDto(bookService.getPageOfPopularBooks(offset, limit).getContent());
 //    }
 
-    @GetMapping("/books/recent")
-    @ResponseBody
-    public BooksPageDto getRecentBooksPage(@RequestParam("offset") Integer offset,
-                                           @RequestParam("limit") Integer limit) {
-        return new BooksPageDto(bookService.getPageOfRecentBooks(offset, limit).getContent());
-    }
+//    @GetMapping("/books/recent")
+//    @ResponseBody
+//    public BooksPageDto getRecentBooksPage(@RequestParam("offset") Integer offset,
+//                                           @RequestParam("limit") Integer limit) {
+//        return new BooksPageDto(bookService.getPageOfRecentBooks(offset, limit).getContent());
+//    }
 
     @GetMapping(value = {"/search", "/search/{searchWord}"})
     public String getSearchResult(@PathVariable(value = "searchWord", required = false) SearchWordDto searchWordDto,
