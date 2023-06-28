@@ -17,9 +17,8 @@ import org.springframework.data.domain.*;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
+import java.time.LocalDateTime;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
@@ -128,8 +127,13 @@ public class BookService {
     }
 
     public Page<Book> getPageofPopularBooks(Integer offset, Integer limit) {
-        Pageable pageable = PageRequest.of(offset, limit);
-        return bookBrowsingRepository.getPopularBooks(pageable);
+        List<BookBrowsing> bookBrowsingList = bookBrowsingRepository.findAllByDateTimeAfter(LocalDateTime.now().minusMonths(1));
+        Map<Book, List<BookBrowsing>> groupingBookBrowsingsbyBooks = bookBrowsingList.stream()
+                .collect(Collectors.groupingBy(BookBrowsing::getBook));
+        List<Book> popularBooks = groupingBookBrowsingsbyBooks.entrySet()
+                .stream().sorted(Comparator.comparingInt(es -> -es.getValue().size()))
+                .map(Map.Entry::getKey).collect(Collectors.toList());
+        return new PageImpl<>(popularBooks);
     }
 
     public Page<Book> getRecentlyViewedBooksPage(BookstoreUser bookstoreUser, Integer offset, Integer limit) {
@@ -140,8 +144,8 @@ public class BookService {
         return new PageImpl<Book>(recentBookBrowsings.stream().map(BookBrowsing::getBook).collect(Collectors.toList()));
     }
 
-    public Page<Book> getRecentBooks(Integer offset, Integer limit) {
+    public Page<Book> getPageOfRecentBooks(Integer offset, Integer limit) {
         Pageable pageable = PageRequest.of(offset, limit);
-        return bookRepository.findFirst20ByOrderByPubDateDesc(pageable);
+        return bookRepository.findFirst100ByOrderByPubDateDesc(pageable);
     }
 }

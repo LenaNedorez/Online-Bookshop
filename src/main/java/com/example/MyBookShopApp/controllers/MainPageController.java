@@ -47,11 +47,8 @@ public class MainPageController {
     @ModelAttribute("popularBooks")
     public List<Book> popularBooks() { return bookService.getPageofPopularBooks(0, 6).getContent(); }
 
-    @ModelAttribute("recentlyViewedBooks")
-    public List<Book> recentlyViewedBooks() {
-        BookstoreUser bookstoreUser = (BookstoreUser) bookstoreUserRegister.getCurrentUser();
-        return bookService.getRecentlyViewedBooksPage(bookstoreUser, 0, 6).getContent();
-    }
+    @ModelAttribute("recentBooks")
+    public List<Book> recentBooks() { return bookService.getPageOfRecentBooks(0, 6).getContent(); }
 
     @GetMapping("/")
     public String mainPage(Model model) {
@@ -72,19 +69,19 @@ public class MainPageController {
         return new BooksPageDto(bookService.getPageofPopularBooks(offset, limit).getContent());
     }
 
-    @GetMapping("/books/recently-viewed")
-    @ResponseBody
-    public BooksPageDto getRecentlyViewedBooksPage(@RequestParam("offset") Integer offset,
-                                                   @RequestParam("limit") Integer limit) {
-        BookstoreUser bookstoreUser = (BookstoreUser) bookstoreUserRegister.getCurrentUser();
-        return new BooksPageDto(bookService.getRecentlyViewedBooksPage(bookstoreUser, offset, limit).getContent());
-    }
+//    @GetMapping("/books/recently-viewed")
+//    @ResponseBody
+//    public BooksPageDto getRecentlyViewedBooksPage(@RequestParam("offset") Integer offset,
+//                                                   @RequestParam("limit") Integer limit) {
+//        BookstoreUser bookstoreUser = (BookstoreUser) bookstoreUserRegister.getCurrentUser();
+//        return new BooksPageDto(bookService.getRecentlyViewedBooksPage(bookstoreUser, offset, limit).getContent());
+//    }
 
     @GetMapping("/books/recent")
     @ResponseBody
     public BooksPageDto getRecentBooksPage(@RequestParam("offset") Integer offset,
                                            @RequestParam("limit") Integer limit) {
-        return new BooksPageDto(bookService.getRecentBooks(offset, limit).getContent());
+        return new BooksPageDto(bookService.getPageOfRecentBooks(offset, limit).getContent());
     }
 
     @GetMapping(value = {"/search", "/search/{searchWord}"})
