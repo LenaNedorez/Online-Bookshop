@@ -21,6 +21,6 @@ public class PopularController {
     @ResponseBody
     public String popularPage(Model model) {
         model.addAttribute("popularBooks", bookService.getPopularBooks());
-        return "/books/popular";
+        return "books/popular";
     }
 }

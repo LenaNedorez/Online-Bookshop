@@ -116,14 +116,6 @@ public class BookService {
         return bookRepository.findBooksByPubDateBetween(firstDate,secondDate);
     }
 
-//    public Page<Book> getRecentlyViewedBooksPage(BookstoreUser bookstoreUser, Integer offset, Integer limit) {
-//        Sort.TypedSort<BookBrowsing> bookBrowsingSort = Sort.sort(BookBrowsing.class);
-//        Sort sort = bookBrowsingSort.by(BookBrowsing::getId).descending();
-//        Pageable pageable = PageRequest.of(offset, limit, sort);
-//        List<BookBrowsing> recentBookBrowsings = bookBrowsingRepository.findFirst10ByBookstoreUser(bookstoreUser, pageable);
-//        return new PageImpl<>(recentBookBrowsings.stream().map(BookBrowsing::getBook).collect(Collectors.toList()));
-//    }
-
     public Page<Book> getPageOfRecentBooks(Integer offset, Integer limit) {
         Pageable pageable = PageRequest.of(offset, limit);
         return bookRepository.findFirst100ByOrderByPubDateDesc(pageable);
@@ -142,9 +134,5 @@ public class BookService {
                 .map(Map.Entry::getKey).collect(Collectors.toList());
     }
 
-    public List<Book> getRecentlyViewedBooks(BookstoreUser bookstoreUser) {
-        Sort.TypedSort<BookBrowsing> bookBrowsingSort = Sort.sort(BookBrowsing.class);
-        Sort sort = bookBrowsingSort.by(BookBrowsing::getId).descending();
-        return bookBrowsingRepository.findFirst10ByBookstoreUser(bookstoreUser, sort).stream().map(BookBrowsing::getBook).collect(Collectors.toList());
-    }
+
 }

@@ -2,7 +2,7 @@ package com.example.MyBookShopApp.controllers;
 
 import com.example.MyBookShopApp.security.BookstoreUser;
 import com.example.MyBookShopApp.security.BookstoreUserRegister;
-import com.example.MyBookShopApp.services.BookService;
+import com.example.MyBookShopApp.services.RecentlyViewedService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -11,19 +11,19 @@ import org.springframework.web.bind.annotation.GetMapping;
 @Controller
 public class RecentlyViewedController {
 
-    private final BookService bookService;
+    private final RecentlyViewedService recentlyViewedService;
     private final BookstoreUserRegister bookstoreUserRegister;
 
     @Autowired
-    public RecentlyViewedController(BookService bookService, BookstoreUserRegister bookstoreUserRegister) {
-        this.bookService = bookService;
+    public RecentlyViewedController(RecentlyViewedService recentlyViewedService, BookstoreUserRegister bookstoreUserRegister) {
+        this.recentlyViewedService = recentlyViewedService;
         this.bookstoreUserRegister = bookstoreUserRegister;
     }
 
     @GetMapping("/books/recently-viewed")
     public String recentlyViewedPage(Model model) {
         BookstoreUser bookstoreUser = (BookstoreUser) bookstoreUserRegister.getCurrentUser();
-        model.addAttribute("recentlyViewedBooks", bookService.getRecentlyViewedBooks(bookstoreUser));
+        model.addAttribute("recentlyViewedBooks", recentlyViewedService.getRecentlyViewedBooks(bookstoreUser));
         return "/books/recently-viewed";
     }
 }
