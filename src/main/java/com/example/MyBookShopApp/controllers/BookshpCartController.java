@@ -87,18 +87,6 @@ public class BookshpCartController {
         return "redirect:/books/" + slug;
     }
 
-//    @GetMapping("/pay")
-//    public RedirectView handlePay(@CookieValue(value = "cartContents", required = false) String cartContents) throws NoSuchAlgorithmException {
-//
-//        cartContents = cartContents.startsWith("/") ? cartContents.substring(1) : cartContents;
-//        cartContents = cartContents.endsWith("/") ? cartContents.substring(0, cartContents.length() - 1) :
-//                cartContents;
-//        String[] cookieSlugs = cartContents.split("/");
-//        List<Book> booksFromCookieSlugs = bookRepository.findBooksBySlugIn(cookieSlugs);
-//        String paymentUrl = paymentService.getPaymentUrl(booksFromCookieSlugs);
-//        return new RedirectView(paymentUrl);
-//    }
-
     @GetMapping("/pay")
     public String handlePay(@RequestParam("user_id") Integer userId, @CookieValue(value = "cartContents", required = false) String cartContents){
 
