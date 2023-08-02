@@ -1,12 +1,3 @@
-DROP TABLE IF EXISTS "book_rate";
-
-CREATE TABLE "book_rate" (
-  id SERIAL PRIMARY KEY,
-  id integer NULL,
-  book_id integer NULL,
-  user_id integer NULL,
-  rate TEXT NULL
-);
 
 INSERT INTO book_rate (id,book_id,user_id,rate)
 VALUES

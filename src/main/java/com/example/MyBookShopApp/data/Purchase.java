@@ -21,7 +21,7 @@ import java.util.List;
 public class Purchase {
 
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
     @ManyToOne
     @JoinColumn(name = "users_id", referencedColumnName = "id")

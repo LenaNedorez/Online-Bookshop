@@ -23,6 +23,7 @@ public class RecentlyViewedController {
     @GetMapping("/books/recently-viewed")
     public String recentlyViewedPage(Model model) {
         BookstoreUser bookstoreUser = (BookstoreUser) bookstoreUserRegister.getCurrentUser();
+//        System.out.println(bookstoreUserRegister.getCurrentUser());
         model.addAttribute("recentlyViewedBooks", recentlyViewedService.getRecentlyViewedBooks(bookstoreUser));
         return "/books/recently-viewed";
     }

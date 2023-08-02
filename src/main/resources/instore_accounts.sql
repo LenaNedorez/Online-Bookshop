@@ -1,10 +1,3 @@
-DROP TABLE IF EXISTS "instore_accounts";
-
-CREATE TABLE "instore_accounts" (
-  id SERIAL PRIMARY KEY,
-  id integer NULL,
-  current_amount integer NULL
-);
 
 INSERT INTO instore_accounts (id,current_amount)
 VALUES

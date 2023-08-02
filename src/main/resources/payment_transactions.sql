@@ -1,13 +1,3 @@
-DROP TABLE IF EXISTS "payment_transactions";
-
-CREATE TABLE "payment_transactions" (
-  id SERIAL PRIMARY KEY,
-  id integer NULL,
-  users_id integer NULL,
-  timestamp varchar(255),
-  amount integer NULL,
-  status varchar(255) default NULL
-);
 
 INSERT INTO payment_transactions (id,users_id,timestamp,amount,status)
 VALUES

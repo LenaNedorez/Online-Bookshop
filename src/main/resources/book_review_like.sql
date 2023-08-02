@@ -1,11 +1,3 @@
-DROP TABLE IF EXISTS "book_review_like";
-
-CREATE TABLE "book_review_like" (
-  id SERIAL PRIMARY KEY,
-  id integer NULL,
-  book_review_id integer NULL,
-  value TEXT NULL
-);
 
 INSERT INTO book_review_like (id,book_review_id,value)
 VALUES

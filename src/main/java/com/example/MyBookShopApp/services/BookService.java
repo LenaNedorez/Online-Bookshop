@@ -71,8 +71,8 @@ public class BookService {
     }
 
     public Page<Book> getPageOfRecommendedBooks(Integer offset, Integer limit) {
-        Pageable nextPage = PageRequest.of(offset, limit);
-        return bookRepository.findAll(nextPage);
+        Pageable pageable = PageRequest.of(offset, limit);
+        return bookRepository.findAll(pageable);
     }
 
     public Page<Book> getPageOfSearchResultBooks(String searchWord, Integer offset, Integer limit) {
@@ -133,6 +133,4 @@ public class BookService {
                 .stream().sorted(Comparator.comparingInt(es -> -es.getValue().size()))
                 .map(Map.Entry::getKey).collect(Collectors.toList());
     }
-
-
 }

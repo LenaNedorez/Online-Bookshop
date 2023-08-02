@@ -1,13 +1,3 @@
-DROP TABLE IF EXISTS "book_file";
-
-CREATE TABLE "book_file" (
-  id SERIAL PRIMARY KEY,
-  id integer NULL,
-  hash varchar(36) NOT NULL,
-  type_id TEXT NULL,
-  path varchar(255),
-  book_id integer NULL
-);
 
 INSERT INTO book_file (id,hash,type_id,path,book_id)
 VALUES

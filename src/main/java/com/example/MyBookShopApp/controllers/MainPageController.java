@@ -45,16 +45,16 @@ public class MainPageController {
     public List<Book> recentBooks() { return bookService.getPageOfRecentBooks(0, 6).getContent(); }
 
     @GetMapping("/")
-    public String mainPage(Model model) {
+    public String mainPage() {
         return "index";
     }
 
-    @GetMapping("/books/recommended")
-    @ResponseBody
-    public BooksPageDto getBooksPage(@RequestParam("offset") Integer offset,
-                                     @RequestParam("limit") Integer limit) {
-        return new BooksPageDto(bookService.getPageOfRecommendedBooks(offset, limit).getContent());
-    }
+//    @GetMapping("/books/recommended")
+//    @ResponseBody
+//    public BooksPageDto getBooksPage(@RequestParam("offset") Integer offset,
+//                                     @RequestParam("limit") Integer limit) {
+//        return new BooksPageDto(bookService.getPageOfRecommendedBooks(offset, limit).getContent());
+//    }
 
 //    @GetMapping("/books/popular")
 //    @ResponseBody

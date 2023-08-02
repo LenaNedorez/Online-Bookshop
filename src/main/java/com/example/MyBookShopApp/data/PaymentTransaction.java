@@ -18,7 +18,7 @@ import java.time.LocalDateTime;
 public class PaymentTransaction {
 
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
     @ManyToOne
     @JoinColumn(name = "users_id", referencedColumnName = "id")

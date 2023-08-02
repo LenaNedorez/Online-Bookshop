@@ -1,13 +1,3 @@
-DROP TABLE IF EXISTS "book_review";
-
-CREATE TABLE "book_review" (
-  id SERIAL PRIMARY KEY,
-  id integer NULL,
-  date_time varchar(255),
-  book_id integer NULL,
-  user_id integer NULL,
-  text TEXT default NULL
-);
 
 INSERT INTO book_review (id,date_time,book_id,user_id,text)
 VALUES

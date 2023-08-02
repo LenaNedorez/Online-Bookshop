@@ -1,13 +1,3 @@
-DROP TABLE IF EXISTS "purchases";
-
-CREATE TABLE "purchases" (
-  id SERIAL PRIMARY KEY,
-  id integer NULL,
-  users_id integer NULL,
-  purchase_date varchar(255),
-  amount integer NULL,
-  status varchar(255) default NULL
-);
 
 INSERT INTO purchases (id,users_id,purchase_date,amount,status)
 VALUES

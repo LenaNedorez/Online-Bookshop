@@ -1,19 +1,3 @@
-DROP TABLE IF EXISTS "books";
-
-CREATE TABLE "books" (
-  id SERIAL PRIMARY KEY,
-  id integer NULL,
-  pub_date varchar(255),
-  author_id integer NULL,
-  is_bestseller integer NULL,
-  slug varchar(255),
-  title TEXT default NULL,
-  image varchar(255),
-  description TEXT default NULL,
-  price integer NULL,
-  discount integer NULL,
-  purchase_id integer NULL
-);
 
 INSERT INTO books (id,pub_date,author_id,is_bestseller,slug,title,image,description,price,discount,purchase_id)
 VALUES

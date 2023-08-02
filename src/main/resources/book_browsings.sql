@@ -1,12 +1,3 @@
-DROP TABLE IF EXISTS "book_browsings";
-
-CREATE TABLE "book_browsings" (
-  id SERIAL PRIMARY KEY,
-  id integer NULL,
-  books_id integer NULL,
-  users_id integer NULL,
-  date_time varchar(255)
-);
 
 INSERT INTO book_browsings (id,books_id,users_id,date_time)
 VALUES
