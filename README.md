@@ -39,4 +39,4 @@ This project is a web application implementing an online bookstore. It allows us
 
 ## Thank you
 - Thank you everyone who contributed to the development of this project, especially Skillbox developers who provided frontend part of the project.
-- Special thanks to the developers of the technologies used - Java, Spring Framework,	Spring Boot, Spring Data JPA,	Spring Security,	PostgreSQL,	Maven, OAuth 2.0,	JWT!
+- Special thanks to the developers of the technologies used - Java, Spring Framework,	Spring Boot, Spring Data JPA,	Spring Security,	PostgreSQL,	Maven, OAuth 2.0,	JWT and others
